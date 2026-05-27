@@ -2,15 +2,12 @@ package com.example.edustream_ums_user_MS.dto.requestDTO;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 import org.jspecify.annotations.NullMarked;
-import org.springframework.stereotype.Service;
+
 
 @Getter
-@Service
+@Setter
 @AllArgsConstructor
 @NullMarked
 @Builder
