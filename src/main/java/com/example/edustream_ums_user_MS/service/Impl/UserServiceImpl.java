@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
         // 2. Then it checks whether the given password matches the stored password for that username
         if (!user.getPassword().equals(password)) {
             log.error("Invalid password for username: {}", username);
-            throw new RuntimeException("Invalid username or password");
+            throw new RuntimeException("Invalid password for username: " + username);
         }
 
         return UserResponseDTO.builder()
