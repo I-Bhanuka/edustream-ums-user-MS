@@ -3,6 +3,7 @@ package com.example.edustream_ums_user_MS.controller;
 import com.example.edustream_lib_common.responseDTO.ApiResponse;
 import com.example.edustream_ums_user_MS.dto.requestDTO.GetUserByUsernameRequestDTO;
 import com.example.edustream_ums_user_MS.dto.requestDTO.UserCreateRequestDTO;
+import com.example.edustream_ums_user_MS.dto.requestDTO.ValidateUserRequestDTO;
 import com.example.edustream_ums_user_MS.dto.responseDTO.UserCreateResponseDTO;
 import com.example.edustream_ums_user_MS.dto.responseDTO.UserResponseDTO;
 import com.example.edustream_ums_user_MS.service.UserService;
@@ -41,4 +42,17 @@ public class UserController {
                 .status(HttpStatus.OK)
                 .body(ApiResponse.success(responseDTO, "User retrieved successfully"));
     }
+
+    @PostMapping("/validateCredentials")
+    public ResponseEntity<ApiResponse<UserResponseDTO>> validateUserCredentials(
+            @Valid @RequestBody ValidateUserRequestDTO validateUserRequestDTO) {
+
+        UserResponseDTO responseDTO = userService.validateUserCredentials(validateUserRequestDTO);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(responseDTO, "User credentials validated successfully"));
+    }
+
+
 }
