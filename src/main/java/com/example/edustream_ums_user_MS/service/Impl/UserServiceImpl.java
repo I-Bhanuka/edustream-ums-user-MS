@@ -2,6 +2,7 @@ package com.example.edustream_ums_user_MS.service.Impl;
 
 import com.example.edustream_ums_user_MS.dto.requestDTO.GetUserByUsernameRequestDTO;
 import com.example.edustream_ums_user_MS.dto.requestDTO.UserCreateRequestDTO;
+import com.example.edustream_ums_user_MS.dto.requestDTO.ValidateUserRequestDTO;
 import com.example.edustream_ums_user_MS.dto.responseDTO.UserCreateResponseDTO;
 import com.example.edustream_ums_user_MS.dto.responseDTO.UserResponseDTO;
 import com.example.edustream_ums_user_MS.entity.User;
@@ -62,4 +63,29 @@ public class UserServiceImpl implements UserService {
                 .role(user.getRole())
                 .build();
     }
+
+    @Override
+    public UserResponseDTO validateUserCredentials(ValidateUserRequestDTO validateUserRequestDTO) {
+        log.info("================================ Validating User Credentials ==============================");
+        String username = validateUserRequestDTO.getUsername();
+        String password = validateUserRequestDTO.getPassword();
+
+        log.info("Validating credentials for username: {}", username);
+
+        // 1. First it gets the username
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+
+        // 2. Then it checks whether the given password matches the stored password for that username
+        if (!user.getPassword().equals(password)) {
+            log.error("Invalid password for username: {}", username);
+            throw new RuntimeException("Invalid username or password");
+        }
+
+        return UserResponseDTO.builder()
+                .username(user.getUsername())
+                .role(user.getRole())
+                .build();
+    }
+
 }
