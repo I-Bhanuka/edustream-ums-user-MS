@@ -10,6 +10,7 @@ import com.example.edustream_ums_user_MS.repository.UserRepository;
 import com.example.edustream_ums_user_MS.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserCreateResponseDTO createUser(UserCreateRequestDTO userCreateRequestDTO) {
@@ -33,7 +35,7 @@ public class UserServiceImpl implements UserService {
         // Create a new user entity with the requested data
         User createUser = User.builder()
                 .username(userCreateRequestDTO.getUsername())
-                .password(userCreateRequestDTO.getPassword())
+                .password(passwordEncoder.encode(userCreateRequestDTO.getPassword()))
                 .role(userCreateRequestDTO.getRole())
                 .build();
 
@@ -77,7 +79,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
 
         // 2. Then it checks whether the given password matches the stored password for that username
-        if (!user.getPassword().equals(password)) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             log.error("Invalid password for username: {}", username);
             throw new RuntimeException("Invalid password for username: " + username);
         }
