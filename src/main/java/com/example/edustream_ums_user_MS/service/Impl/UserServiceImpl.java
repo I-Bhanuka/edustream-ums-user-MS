@@ -6,6 +6,7 @@ import com.example.edustream_ums_user_MS.dto.requestDTO.ValidateUserRequestDTO;
 import com.example.edustream_ums_user_MS.dto.responseDTO.UserCreateResponseDTO;
 import com.example.edustream_ums_user_MS.dto.responseDTO.UserResponseDTO;
 import com.example.edustream_ums_user_MS.entity.User;
+import com.example.edustream_ums_user_MS.exception.UserNotFoundException;
 import com.example.edustream_ums_user_MS.repository.UserRepository;
 import com.example.edustream_ums_user_MS.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +59,7 @@ public class UserServiceImpl implements UserService {
         log.info("Retrieving user with username: {}", getUserByUsernameRequestDTO.getUsername());
 
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+                .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
 
         return UserResponseDTO.builder()
                 .username(user.getUsername())
@@ -76,12 +77,12 @@ public class UserServiceImpl implements UserService {
 
         // 1. First it gets the username
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+                .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
 
         // 2. Then it checks whether the given password matches the stored password for that username
         if (!passwordEncoder.matches(password, user.getPassword())) {
             log.error("Invalid password for username: {}", username);
-            throw new RuntimeException("Invalid password for username: " + username);
+            throw new UserNotFoundException("Invalid password for username: " + username);
         }
 
         return UserResponseDTO.builder()
